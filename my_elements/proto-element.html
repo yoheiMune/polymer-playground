@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="proto-element">
+    <style>
+        div {
+            background-color: green;
+        }
+    </style>
+    <template>
+        <div>Hello <span>{{name}}</span>ー（proto-element内） by <span>{{owner}}</span></div>
+        <content></content>
+    </template>
+    <script>
+        Polymer({
+            is: 'proto-element',
+            properties: {
+                name: {
+                    type: String,
+                    value: "Everyone"
+                }
+            },
+            ready: function () {
+                // this.textContent = 'I am proto-element';
+                this.owner = 'yoheiM';
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,190 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<dom-module id="my-calculator">
+    <style>
+        .root {
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+        }
+        .display-area {
+            position: relative;
+            height: 25%;
+            width: 100%;
+            background-color: rgba(255,255,255,.75);
+            text-align: right;
+            font-size:  42px;
+            font-weight: bold;
+            color: #333;
+            vertical-align: bottom;
+        }
+        .display-area .text {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+        .control-area {
+            height: 75%;
+        }
+        .row {
+            height: calc((100% - 25%) / 4);
+            width: 100%;
+        }
+        .row:after {
+            display: block;
+            width: 0;
+            height: 0;
+            content: " ";
+            clear: both;
+        }
+        .btn {
+            float: left;
+            width: 25%;
+            height: 100%;
+            margin: 0;
+            color: #ccc;
+            border-right: 1px solid rgba(255,255,255,.1);
+            border-bottom: 1px solid rgba(255,255,255,.1);   
+        }
+        .col2 {
+            width: 50%;
+        }
+        .btn::shadow paper-material {
+            height: 100%;
+        }
+        .btn:nth-child(1)::shadow paper-ripple {
+            color: rgba(255,255,0,1);
+        }
+        .btn:nth-child(2)::shadow paper-ripple {
+            color: rgba(255,0,255,1);
+        }
+        .btn:nth-child(3)::shadow paper-ripple {
+            color: rgba(0,255,255,1);
+        }
+        .btn:nth-child(4)::shadow paper-ripple {
+            color: rgba(255,255,255,1);
+        }
+    </style>
+    <template>
+        <div class="root">
+            <div class="display-area">
+                <span id="result" class="text">0</span>
+            </div>
+            <div class="control-area">
+                <div class="row">
+                    <paper-button class="btn">AC</paper-button>
+                    <paper-button class="btn">+/-</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">%</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">÷</paper-button>
+                </div>
+                <div class="row">
+                    <paper-button class="btn" on-click="numberClick">7</paper-button>
+                    <paper-button class="btn" on-click="numberClick">8</paper-button>
+                    <paper-button class="btn" on-click="numberClick">9</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">×</paper-button>
+                </div>
+                <div class="row">
+                    <paper-button class="btn" on-click="numberClick">4</paper-button>
+                    <paper-button class="btn" on-click="numberClick">5</paper-button>
+                    <paper-button class="btn" on-click="numberClick">6</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">-</paper-button>
+                </div>
+                <div class="row">
+                    <paper-button class="btn" on-click="numberClick">1</paper-button>
+                    <paper-button class="btn" on-click="numberClick">2</paper-button>
+                    <paper-button class="btn" on-click="numberClick">3</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">+</paper-button>
+                </div>
+                <div class="row">
+                    <paper-button class="btn col2" on-click="numberClick">0</paper-button>
+                    <paper-button class="btn">.</paper-button>
+                    <paper-button class="btn" on-click="calcClick">=</paper-button>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+
+    var numberWithCommas = function (x) {
+        var x = x.toString();
+        var pattern = /(-?\d+)(\d{3})/;
+        while (pattern.test(x))
+            x = x.replace(pattern, "$1,$2");
+        return x;
+    };
+
+    /**
+    * Evaluate a mathematical expression (as a string) and return the result
+    * @param {String} expr A mathematical expression
+    * @returns {Decimal} Result of the mathematical expression
+    * @example
+    *    // Returns -81.4600
+    *    expr("10.04+9.5-1+-100");
+    */ 
+    function expr (expr) {
+
+        var chars = expr.split("");
+        var n = [], op = [], index = 0, oplast = true;
+
+        n[index] = "";
+
+        // Parse the expression
+        for (var c = 0; c < chars.length; c++) {
+
+            if (isNaN(parseInt(chars[c])) && chars[c] !== "." && !oplast) {
+                op[index] = chars[c];
+                index++;
+                n[index] = "";
+                oplast = true;
+            } else {
+                n[index] += chars[c];
+                oplast = false;
+            }
+        }
+
+        // Calculate the expression
+        expr = parseFloat(n[0]);
+        for (var o = 0; o < op.length; o++) {
+            var num = parseFloat(n[o + 1]);
+            switch (op[o]) {
+                case "+":
+                    expr = expr + num;
+                    break;
+                case "-":
+                    expr = expr - num;
+                    break;
+                case "×":
+                    expr = expr * num;
+                    break;
+                case "/":
+                    expr = expr / num;
+                    break;
+            }
+        }
+
+        return expr;
+    }
+
+    Polymer({
+        is: 'my-calculator',
+        numberClick: function (e) {
+            var num = e.target.textContent.replace(/\s/g, '');;
+            num = this.$.result.textContent + num;
+            if (num.indexOf(0) === 0) {
+                num = num.slice(1);
+            }
+            this.$.result.textContent = num;
+        },
+        operatorClick: function (e) {
+            var ope = e.target.textContent.replace(/\s/g, '');
+            this.$.result.textContent += ope;
+        },
+        calcClick: function (e) {
+            var formula = '' + this.$.result.textContent;
+            console.debug(formula);
+            var result = expr(this.$.result.textContent);
+            this.$.result.textContent = result;
+        }
+    });
+    </script>
+</dom-module>

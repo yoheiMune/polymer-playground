@@ -1,0 +1,19 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<dom-module id="name-tag">
+    <template>
+        <p>Hello <span>{{name}}</span></p>
+        <input type="text" is="iron-input" bind-value="{{name}}" placeholder="Your name here">
+    </template>
+    <script>
+    Polymer({
+        is: 'name-tag',
+        properties: {
+            name: {
+                type: String,
+                value: "NoName"
+            }
+        }
+    });
+    </script>
+</dom-module>
