@@ -2,6 +2,9 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <dom-module id="my-calculator">
     <style>
+        :host {
+            display: block;
+        }
         .root {
             width: 100%;
             height: 100%;
@@ -41,10 +44,11 @@
             float: left;
             width: 25%;
             height: 100%;
-            margin: 0;
+            margin: 0 !important;
             color: #ccc;
             border-right: 1px solid rgba(255,255,255,.1);
-            border-bottom: 1px solid rgba(255,255,255,.1);   
+            border-bottom: 1px solid rgba(255,255,255,.1);
+            min-width: auto !important;
         }
         .col2 {
             width: 50%;
@@ -57,6 +61,7 @@
         }
         .btn::shadow paper-material {
             height: 100%;
+            padding: 10px 0 0 0;
         }
         .btn:nth-child(1)::shadow paper-ripple {
             color: rgba(255,255,0,1);
@@ -108,67 +113,6 @@
         </div>
     </template>
     <script>
-
-    var numberWithCommas = function (x) {
-        var x = x.toString();
-        var pattern = /(-?\d+)(\d{3})/;
-        while (pattern.test(x))
-            x = x.replace(pattern, "$1,$2");
-        return x;
-    };
-
-    /**
-    * Evaluate a mathematical expression (as a string) and return the result
-    * @param {String} expr A mathematical expression
-    * @returns {Decimal} Result of the mathematical expression
-    * @example
-    *    // Returns -81.4600
-    *    expr("10.04+9.5-1+-100");
-    */ 
-    function expr (expr) {
-
-        var chars = expr.split("");
-        var n = [], op = [], index = 0, oplast = true;
-
-        n[index] = "";
-
-        // Parse the expression
-        for (var c = 0; c < chars.length; c++) {
-
-            if (isNaN(parseInt(chars[c])) && chars[c] !== "." && !oplast) {
-                op[index] = chars[c];
-                index++;
-                n[index] = "";
-                oplast = true;
-            } else {
-                n[index] += chars[c];
-                oplast = false;
-            }
-        }
-
-        // Calculate the expression
-        expr = parseFloat(n[0]);
-        for (var o = 0; o < op.length; o++) {
-            var num = parseFloat(n[o + 1]);
-            switch (op[o]) {
-                case "+":
-                    expr = expr + num;
-                    break;
-                case "-":
-                    expr = expr - num;
-                    break;
-                case "×":
-                    expr = expr * num;
-                    break;
-                case "÷":
-                    expr = expr / num;
-                    break;
-            }
-        }
-
-        return expr;
-    }
-
 
     /**
         計算する（数式 → 逆ポーランド → 計算）

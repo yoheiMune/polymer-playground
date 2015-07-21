@@ -3,13 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>calculator</title>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+    window.Polymer = window.Polymer || {};
+    window.Polymer.dom = 'shadow';
+    </script>
     <link rel="import" href="my_elements/my-calculator.html">
     <style>
         html,body {margin: 0; padding: 0; height: 100%; width: 100%;}
+        my-calculator {
+            float: left;
+            width: 50%;
+            height: 50%;
+        }
     </style>
 </head>
 <body>
 
+
+<my-calculator></my-calculator>
+<my-calculator></my-calculator>
+<my-calculator></my-calculator>
 <my-calculator></my-calculator>
     
 </body>
