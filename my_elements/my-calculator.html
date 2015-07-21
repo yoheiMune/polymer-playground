@@ -27,7 +27,7 @@
             height: 75%;
         }
         .row {
-            height: calc((100% - 25%) / 4);
+            height: calc(100% / 5);
             width: 100%;
         }
         .row:after {
@@ -48,6 +48,12 @@
         }
         .col2 {
             width: 50%;
+        }
+        .col3 {
+            width: 75%;
+        }
+        .col4 {
+            width: 100%;
         }
         .btn::shadow paper-material {
             height: 100%;
@@ -72,32 +78,30 @@
             </div>
             <div class="control-area">
                 <div class="row">
-                    <paper-button class="btn">AC</paper-button>
-                    <paper-button class="btn">+/-</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">%</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">÷</paper-button>
+                    <paper-button class="btn col3" on-click="clearClick">AC</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">+</paper-button>
                 </div>
                 <div class="row">
                     <paper-button class="btn" on-click="numberClick">7</paper-button>
                     <paper-button class="btn" on-click="numberClick">8</paper-button>
                     <paper-button class="btn" on-click="numberClick">9</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">×</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">÷</paper-button>
                 </div>
                 <div class="row">
                     <paper-button class="btn" on-click="numberClick">4</paper-button>
                     <paper-button class="btn" on-click="numberClick">5</paper-button>
                     <paper-button class="btn" on-click="numberClick">6</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">-</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">×</paper-button>
                 </div>
                 <div class="row">
                     <paper-button class="btn" on-click="numberClick">1</paper-button>
                     <paper-button class="btn" on-click="numberClick">2</paper-button>
                     <paper-button class="btn" on-click="numberClick">3</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">+</paper-button>
+                    <paper-button class="btn" on-click="operatorClick">-</paper-button>
                 </div>
                 <div class="row">
                     <paper-button class="btn col2" on-click="numberClick">0</paper-button>
-                    <paper-button class="btn">.</paper-button>
+                    <paper-button class="btn" on-click="numberClick">00</paper-button>
                     <paper-button class="btn" on-click="calcClick">=</paper-button>
                 </div>
             </div>
@@ -156,7 +160,7 @@
                 case "×":
                     expr = expr * num;
                     break;
-                case "/":
+                case "÷":
                     expr = expr / num;
                     break;
             }
@@ -165,25 +169,120 @@
         return expr;
     }
 
+
+    /**
+        計算する（数式 → 逆ポーランド → 計算）
+    */
+    function calc (expr) {
+        // 前処理：数値とオペランドの分離
+        var elements = [expr];
+        ['+', '-', '÷', '×'].forEach(function (ope) {
+            console.debug('ope: ', ope);
+            var newElements = [];
+            elements.forEach(function (elm) {
+                var chars = elm.split(ope);
+                for (var i = 0; i < chars.length - 1; i++) {
+                    newElements.push(chars[i]);
+                    newElements.push(ope);
+                }
+                newElements.push(chars.pop());
+            });
+            elements = newElements;
+        });
+        console.debug(elements);
+        // 数式 → 逆ポーランド記法
+        var formula = [];
+        var stuck = [];
+        elements.forEach(function (c) {
+            if (c.match(/\d/)) {
+                formula.push(c);
+            } else if (stuck.length === 0) {
+                stuck.push(c);
+            } else if (c.match(/\+|-/) && stuck[stuck.length - 1].match(/\+|-/)) {
+                stuck.push(c);
+            } else if (c.match(/÷|×/) && stuck[stuck.length - 1].match(/÷|×/)) {
+                stuck.push(c);
+            } else if (c.match(/÷|×/) && stuck[stuck.length - 1].match(/\+|-/)) {
+                stuck.push(c);
+            } else {
+                while (true) {
+                    var lastOpe = stuck.pop();
+                    formula.push(lastOpe);
+                    if (stuck.length === 0) {
+                        stuck.push(c);
+                        break;
+                    } else if (stuck[stuck.length - 1].match(/\+|-/)) {
+                        stuck.push(c);
+                        break;
+                    }
+                }
+            }
+        });
+        formula = formula.concat(stuck.reverse());
+        console.debug('formula: ', formula);
+
+        // 逆ポーランド → 計算
+        var formula2 = [];
+        formula.forEach(function (c) {
+            if (c.match(/\d/)) {
+                formula2.push(c);
+            } else {
+                var result;
+                switch (c) {
+                    case '+':
+                        result = parseInt(formula2.pop()) + parseInt(formula2.pop());
+                        break;
+                    case '-':
+                        var v1 = parseInt(formula2.pop());
+                        var v2 = parseInt(formula2.pop());
+                        result = v2 - v1;
+                        break;
+                    case '×':
+                        result = parseInt(formula2.pop()) * parseInt(formula2.pop());
+                        break;
+                    case '÷':
+                        var v1 = parseInt(formula2.pop());
+                        var v2 = parseInt(formula2.pop());
+                        result = v2 / v1;
+                        break;
+                }
+                formula2.push(result);
+            }
+        });
+
+        // 計算結果
+        console.debug('result: ', formula2);
+        return formula2.pop();
+    }
+
     Polymer({
         is: 'my-calculator',
         numberClick: function (e) {
             var num = e.target.textContent.replace(/\s/g, '');;
             num = this.$.result.textContent + num;
-            if (num.indexOf(0) === 0) {
+            if (num.indexOf('0') === 0) {
                 num = num.slice(1);
+            }
+            if (num.match(/^0*$/)) {
+                num = '0';
             }
             this.$.result.textContent = num;
         },
         operatorClick: function (e) {
             var ope = e.target.textContent.replace(/\s/g, '');
-            this.$.result.textContent += ope;
+            var formula = this.$.result.textContent;
+            if (formula.match(/(\+|×|÷|-)$/)) {
+                formula = formula.slice(0, formula.length-1);
+            }
+            this.$.result.textContent = formula + ope;
         },
         calcClick: function (e) {
             var formula = '' + this.$.result.textContent;
-            console.debug(formula);
-            var result = expr(this.$.result.textContent);
+            var result = calc(this.$.result.textContent);
             this.$.result.textContent = result;
+        },
+        clearClick: function () {
+            this.$.result.textContent = '0';
         }
     });
     </script>
