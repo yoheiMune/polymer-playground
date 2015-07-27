@@ -4,6 +4,8 @@
     <style>
         :host {
             display: block;
+            width: 100%;
+            height: 100%;
         }
         .root {
             width: 100%;
@@ -15,11 +17,9 @@
             height: 25%;
             width: 100%;
             background-color: rgba(255,255,255,.75);
-            text-align: right;
             font-size:  42px;
             font-weight: bold;
             color: #333;
-            vertical-align: bottom;
         }
         .display-area .text {
             position: absolute;
@@ -55,9 +55,6 @@
         }
         .col3 {
             width: 75%;
-        }
-        .col4 {
-            width: 100%;
         }
         .btn::shadow paper-material {
             height: 100%;
@@ -121,7 +118,6 @@
         // 前処理：数値とオペランドの分離
         var elements = [expr];
         ['+', '-', '÷', '×'].forEach(function (ope) {
-            console.debug('ope: ', ope);
             var newElements = [];
             elements.forEach(function (elm) {
                 var chars = elm.split(ope);
@@ -221,8 +217,8 @@
             this.$.result.textContent = formula + ope;
         },
         calcClick: function (e) {
-            var formula = '' + this.$.result.textContent;
-            var result = calc(this.$.result.textContent);
+            var formula = this.$.result.textContent;
+            var result = calc(formula);
             this.$.result.textContent = result;
         },
         clearClick: function () {
