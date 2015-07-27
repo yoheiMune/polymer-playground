@@ -12,7 +12,7 @@
             height: 100%;
             background-color: #333;
         }
-        .display-area {
+        .display {
             position: relative;
             height: 25%;
             width: 100%;
@@ -21,29 +21,25 @@
             font-weight: bold;
             color: #333;
         }
-        .display-area .text {
+        .display span {
             position: absolute;
             right: 10px;
             bottom: 10px;
         }
-        .control-area {
+        .controls {
             height: 75%;
         }
-        .row {
-            height: calc(100% / 5);
-            width: 100%;
-        }
-        .row:after {
+        .controls:after {
             display: block;
             width: 0;
             height: 0;
             content: " ";
             clear: both;
         }
-        .btn {
+        paper-button {
             float: left;
             width: 25%;
-            height: 100%;
+            height: calc(100% / 5);
             margin: 0 !important;
             color: #ccc;
             border-right: 1px solid rgba(255,255,255,.1);
@@ -56,55 +52,43 @@
         .col3 {
             width: 75%;
         }
-        .btn::shadow paper-material {
+        paper-button::shadow paper-material {
             height: 100%;
             padding: 10px 0 0 0;
         }
-        .btn:nth-child(1)::shadow paper-ripple {
+        paper-button:nth-child(4n-1)::shadow paper-ripple {
             color: rgba(255,255,0,1);
         }
-        .btn:nth-child(2)::shadow paper-ripple {
+        paper-button:nth-child(4n-2)::shadow paper-ripple {
             color: rgba(255,0,255,1);
         }
-        .btn:nth-child(3)::shadow paper-ripple {
+        paper-button:nth-child(4n-3)::shadow paper-ripple {
             color: rgba(0,255,255,1);
-        }
-        .btn:nth-child(4)::shadow paper-ripple {
-            color: rgba(255,255,255,1);
         }
     </style>
     <template>
         <div class="root">
-            <div class="display-area">
+            <div class="display">
                 <span id="result" class="text">0</span>
             </div>
-            <div class="control-area">
-                <div class="row">
-                    <paper-button class="btn col3" on-click="clearClick">AC</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">+</paper-button>
-                </div>
-                <div class="row">
-                    <paper-button class="btn" on-click="numberClick">7</paper-button>
-                    <paper-button class="btn" on-click="numberClick">8</paper-button>
-                    <paper-button class="btn" on-click="numberClick">9</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">÷</paper-button>
-                </div>
-                <div class="row">
-                    <paper-button class="btn" on-click="numberClick">4</paper-button>
-                    <paper-button class="btn" on-click="numberClick">5</paper-button>
-                    <paper-button class="btn" on-click="numberClick">6</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">×</paper-button>
-                </div>
-                <div class="row">
-                    <paper-button class="btn" on-click="numberClick">1</paper-button>
-                    <paper-button class="btn" on-click="numberClick">2</paper-button>
-                    <paper-button class="btn" on-click="numberClick">3</paper-button>
-                    <paper-button class="btn" on-click="operatorClick">-</paper-button>
-                </div>
-                <div class="row">
-                    <paper-button class="btn col2" on-click="numberClick">0</paper-button>
-                    <paper-button class="btn" on-click="numberClick">00</paper-button>
-                    <paper-button class="btn" on-click="calcClick">=</paper-button>
+            <div class="controls">
+                    <paper-button class="col3" on-click="clearClick">AC</paper-button>
+                    <paper-button on-click="operatorClick">+</paper-button>
+                    <paper-button on-click="numberClick">7</paper-button>
+                    <paper-button on-click="numberClick">8</paper-button>
+                    <paper-button on-click="numberClick">9</paper-button>
+                    <paper-button on-click="operatorClick">÷</paper-button>
+                    <paper-button on-click="numberClick">4</paper-button>
+                    <paper-button on-click="numberClick">5</paper-button>
+                    <paper-button on-click="numberClick">6</paper-button>
+                    <paper-button on-click="operatorClick">×</paper-button>
+                    <paper-button on-click="numberClick">1</paper-button>
+                    <paper-button on-click="numberClick">2</paper-button>
+                    <paper-button on-click="numberClick">3</paper-button>
+                    <paper-button on-click="operatorClick">-</paper-button>
+                    <paper-button class="col2" on-click="numberClick">0</paper-button>
+                    <paper-button on-click="numberClick">00</paper-button>
+                    <paper-button on-click="calcClick">=</paper-button>
                 </div>
             </div>
         </div>
@@ -198,7 +182,7 @@
     Polymer({
         is: 'my-calculator',
         numberClick: function (e) {
-            var num = e.target.textContent.replace(/\s/g, '');;
+            var num = e.target.textContent.replace(/\s/g, '');
             num = this.$.result.textContent + num;
             if (num.indexOf('0') === 0) {
                 num = num.slice(1);
