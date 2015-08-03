@@ -69,7 +69,7 @@
     <template>
         <div class="root">
             <div class="display">
-                <span id="result" class="text">0</span>
+                <span>{{display}}</span>
             </div>
             <div class="controls">
                     <paper-button class="col3" on-click="clearClick">AC</paper-button>
@@ -181,32 +181,33 @@
 
     Polymer({
         is: 'my-calculator',
+        properties: {
+            display: {type: String, value: 0}
+        },
         numberClick: function (e) {
             var num = e.target.textContent.replace(/\s/g, '');
-            num = this.$.result.textContent + num;
+            num = this.display + num;
             if (num.indexOf('0') === 0) {
                 num = num.slice(1);
             }
             if (num.match(/^0*$/)) {
                 num = '0';
             }
-            this.$.result.textContent = num;
+            this.display = num;
         },
         operatorClick: function (e) {
             var ope = e.target.textContent.replace(/\s/g, '');
-            var formula = this.$.result.textContent;
+            var formula = String(this.display);
             if (formula.match(/(\+|×|÷|-)$/)) {
                 formula = formula.slice(0, formula.length-1);
             }
-            this.$.result.textContent = formula + ope;
+            this.display = formula + ope;
         },
         calcClick: function (e) {
-            var formula = this.$.result.textContent;
-            var result = calc(formula);
-            this.$.result.textContent = result;
+            this.display = calc(this.display);
         },
         clearClick: function () {
-            this.$.result.textContent = '0';
+            this.display = '0';
         }
     });
     </script>

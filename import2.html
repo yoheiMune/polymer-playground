@@ -1,0 +1,15 @@
+<template>
+    <style>p {color: red;}</style>
+    <p>I am Yohei Munesada</p>
+</template>
+<script>
+    var importDoc = document.currentScript.ownerDocument;
+    var proto = Object.create(HTMLElement.prototype);
+    proto.createdCallback = function () {
+        var t = importDoc.querySelector('template');
+        var clone = document.importNode(t.content, true);
+        var root = this.createShadowRoot();
+        root.appendChild(clone);
+    }
+    document.registerElement('my-element2', {prototype: proto});
+</script>

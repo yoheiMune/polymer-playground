@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shadow DOM Sample</title>
+</head>
+<body>
+
+    <p>通常のDIVタグです</p>
+    <div id="e1"></div>
+    <template id="t1">
+        <style>div {background-color:red;}</style>
+        <div>ShadowDOM内のDIVです</div>
+    </template>
+
+    <script>
+    var div = document.querySelector('#e1');
+    var root = div.createShadowRoot();
+    var template = document.querySelector('#t1');
+    var node = document.importNode(template.content, true);
+    root.appendChild(node);
+    </script>
+    
+</body>
+</html>

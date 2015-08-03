@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Custom Elements Sample</title>
+    <link rel="import" href="import2.html">
+</head>
+<body>
+
+
+
+
+    <script>
+        var proto = Object.create(HTMLElement.prototype)
+        proto.createdCallback = function () {
+
+        }
+        document.registerElement('my-element', {prototype: proto});
+    </script>
+
+    <my-element></my-element>
+
+
+    <p>Hello World!</p>
+    <my-element2></my-element2>
+
+
+
+    
+</body>
+</html>

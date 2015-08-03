@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML Imports Sample</title>
+    <link rel="import" href="import.html">
+</head>
+<body>
+    
+    <h3>Hello HTML Imports</h3>
+
+    <script>
+        var link = document.querySelector('link[rel="import"]');
+        var content = link.import;
+        document.body.appendChild(content.body.cloneNode(true));
+    </script>
+
+
+
+
+
+
+
+</body>
+</html>
